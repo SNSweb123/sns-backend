@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -10,8 +14,6 @@ import newsletterRoutes from "../routes/newsletterRoutes.js";
 import paymentRoutes from "../routes/payment.js";
 import adminRoutes from "../routes/admin.js";
 
-import dotenv from "dotenv";
-dotenv.config();
 
 const app = express();
 

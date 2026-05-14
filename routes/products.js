@@ -2,6 +2,7 @@ import express from "express";
 
 import SubscriptionProduct from "../models/SubscriptionProduct.js";
 import GiftVoucherProduct from "../models/GiftVoucherProduct.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const router = express.Router();
 
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
 // =============================
 // CREATE PRODUCT
 // =============================
-router.post("/", async (req, res) => {
+router.post("/", adminAuth, async (req, res) => {
 
   try {
 
@@ -89,7 +90,7 @@ router.post("/", async (req, res) => {
 // =============================
 // DELETE
 // =============================
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", adminAuth, async (req, res) => {
 
   try {
 
@@ -119,7 +120,10 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id/coupon/delete", async (req, res) => {
+router.put(
+  "/:id/coupon/delete",
+  adminAuth,
+  async (req, res) => {
   try {
     const { code } = req.body;
 
@@ -149,7 +153,7 @@ router.put("/:id/coupon/delete", async (req, res) => {
 // =============================
 // UPDATE
 // =============================
-router.put("/:id", async (req, res) => {
+router.put("/:id", adminAuth, async (req, res) => {
 
   try {
 

@@ -9,10 +9,12 @@ const router = express.Router();
 
 console.log(process.env.RAZORPAY_KEY_ID);
 console.log(process.env.RAZORPAY_SECRET);
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_SECRET,
-});
+const getRazorpayInstance = () => {
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_SECRET,
+  });
+};
 
 
 router.post("/create-order", async (req, res) => {
@@ -23,7 +25,9 @@ const options = {
   receipt: "rcpt_" + Date.now(),
 };
 
-    const order = await razorpay.orders.create(options);
+const razorpay = getRazorpayInstance();
+
+const order = await razorpay.orders.create(options);
 
     res.json(order);
   } catch (err) {

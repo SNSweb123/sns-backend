@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import cloudinary from "../config/cloudinary.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const router = express.Router();
 
@@ -8,7 +9,11 @@ const upload = multer({
   dest: "/tmp"
 });
 
-router.post("/", upload.single("image"), async (req, res) => {
+router.post(
+  "/",
+  adminAuth,
+  upload.single("image"),
+  async (req, res) => {
 
   try {
 
