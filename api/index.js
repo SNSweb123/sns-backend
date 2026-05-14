@@ -18,10 +18,28 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log('MongoDB Connected'))
-.catch(err => console.log(err));
 
+// ✅ Debug ENV
+console.log("MONGODB_URI:", process.env.MONGODB_URI ? "FOUND" : "MISSING");
+
+
+// ✅ MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI)
+.then(() => {
+  console.log("MongoDB Connected");
+})
+.catch((err) => {
+  console.log("MongoDB Error:", err);
+});
+
+
+// ✅ Test Route
+app.get("/", (req, res) => {
+  res.send("Backend Running 🚀");
+});
+
+
+// ✅ Routes
 app.use('/api/products', productRoutes);
 app.use('/api/orders', ordersRouter);
 app.use("/api/upload", uploadRoutes);
@@ -29,6 +47,8 @@ app.use('/api/newsletter', newsletterRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/admin", adminRoutes);
 
+
+// ✅ Admin Route
 app.get('/api/admin/products', async (req, res) => {
 
   try {
@@ -45,4 +65,6 @@ app.get('/api/admin/products', async (req, res) => {
   }
 });
 
+
+// ✅ Export App
 export default app;
