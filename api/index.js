@@ -5,6 +5,7 @@ import productRoutes from '../routes/products.js';
 import ordersRouter from '../routes/orders.js';
 import paymentRoutes from "../routes/payment.js";
 import newsletterRoutes from "../routes/newsletterRoutes.js";
+import adminRoutes from "../routes/admin.js";
 
 
 import dotenv from "dotenv";
@@ -17,6 +18,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', ordersRouter);
 app.use("/api/payment", paymentRoutes);
 app.use('/api/newsletter', newsletterRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 app.use(express.json());
