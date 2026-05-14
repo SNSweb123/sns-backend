@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import productRoutes from '../routes/products.js';
+import ordersRouter from '../routes/orders.js';
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -10,6 +11,7 @@ const app = express();
 
 app.use(cors());
 app.use('/api/products', productRoutes);
+app.use('/api/orders', ordersRouter);
 app.use(express.json());
 
 
