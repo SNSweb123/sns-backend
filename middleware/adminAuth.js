@@ -2,11 +2,10 @@ const adminAuth = (req, res, next) => {
 
   const adminKey = req.headers["x-admin-key"];
 
-  console.log("HEADER:", adminKey);
-  console.log("ENV:", process.env.ADMIN_SECRET);
-
-  // TEMPORARY FORCE CHECK
-  if (adminKey !== "snsadmin123") {
+  if (
+    String(adminKey).trim() !==
+    String(process.env.ADMIN_SECRET).trim()
+  ) {
 
     return res.status(401).json({
       message: "Unauthorized"
