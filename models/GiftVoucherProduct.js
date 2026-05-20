@@ -11,6 +11,10 @@ const giftVoucherSchema = new mongoose.Schema(
       default: "gift-voucher"
     },
 
+    // ✅ ADD THESE
+    validity: String,
+    delivery: String,
+
     originalPrice: Number,
 
     discountedPrice: Number,
@@ -20,6 +24,9 @@ const giftVoucherSchema = new mongoose.Schema(
     icon: String,
 
     gradient: String,
+
+
+
 
     // ✅ unlimited coupon codes
     couponCodes: [
