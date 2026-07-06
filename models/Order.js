@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
+
+
+  status: {
+  type: String,
+  default: "pending" // pending, paid, accepted, rejected
+},
   
   // ✅ YOUR CUSTOM ORDER ID
   orderId: {
@@ -8,10 +14,6 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
 
-  // ✅ RAZORPAY ORDER ID
-  razorpayOrderId: {
-    type: String
-  },
 
   items: [
     {

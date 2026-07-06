@@ -1,19 +1,19 @@
 import express from 'express';
 import Order from '../models/Order.js';
-import GiftVoucherProduct from "../models/GiftVoucherProduct.js";
-
+import { v4 as uuidv4 } from "uuid";
 
 const router = express.Router();
-
 
 
 // CREATE NEW ORDER
 router.post('/', async (req, res) => {
   try {
-    let deliveredCodes = [];
+   
+   const generatedOrderId = uuidv4(); 
+
+     
     const {
-      orderId,
-      items,
+       items,
       totalPriceINR,
       totalPriceUSDT,
       fullName,
@@ -21,85 +21,114 @@ router.post('/', async (req, res) => {
       phone,
     } = req.body;
 
-    if (!orderId || !fullName || !email || !phone ) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-
-    if (!items || items.length === 0 || totalPriceINR <= 0) {
-      return res.status(400).json({ message: 'Invalid order data' });
-    }
-
-
-for (const item of items) {
-
-  // only gift voucher
-  if (item.productType === "gift-voucher") {
-
-    const product =
-      await GiftVoucherProduct.findById(item.productId);
-
-    if (!product) continue;
-
-    // unused code
-    const availableCode =
-      product.couponCodes.find(c => !c.isUsed);
-
-    // no codes left
-    if (!availableCode) {
-
+    if (!fullName || !email || !phone) {
       return res.status(400).json({
-        message: `No codes left for ${product.name}`
+        message: 'Missing required fields'
       });
     }
 
-    // used mark
-    availableCode.isUsed = true;
-
-    await product.save();
-
-    // customer ko dene ke liye
-    deliveredCodes.push({
-      productName: product.name,
-      code: availableCode.code
-    });
-  }
+if (!items || !Array.isArray(items) || items.length === 0) {
+  return res.status(400).json({ message: "Cart empty" });
 }
 
+if (!totalPriceINR || isNaN(totalPriceINR) || totalPriceINR <= 0) {
+  return res.status(400).json({ message: "Invalid total price" });
+}
 
-
-   const newOrder = new Order({
-  orderId,
-  items,
-  totalPriceINR,
-  totalPriceUSDT,
-  fullName,
-  email,
-  phone,
-  deliveredCodes,
-});
+    const newOrder = new Order({
+      orderId: generatedOrderId,
+      items,
+      totalPriceINR,
+      totalPriceUSDT,
+      fullName,
+      email,
+      phone,
+      status: "pending"
+    });
 
     await newOrder.save();
 
     res.status(201).json({
       message: 'Order saved successfully',
-      order: newOrder,
-       deliveredCodes
-      
+        orderId: generatedOrderId,  
+      order: newOrder
     });
 
   } catch (error) {
     console.error("ORDER ERROR:", error);
-    res.status(500).json({ message: 'Failed to save order' });
+
+    res.status(500).json({
+      message: 'Failed to save order'
+    });
   }
 });
+
 
 // GET ALL ORDERS
 router.get('/', async (req, res) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+
+    const orders =
+      await Order.find().sort({ createdAt: -1 });
+
     res.json(orders);
+
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch orders', error });
+
+    res.status(500).json({
+      message: 'Failed to fetch orders',
+      error
+    });
+  }
+});
+
+router.put("/decision", async (req, res) => {
+  try {
+    const { orderId, action } = req.body;
+
+    await Order.findByIdAndUpdate(orderId, {
+      status: action // accepted / rejected
+    });
+
+    res.json({ success: true });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// MARK AS PAID (USER CLICK)
+router.put('/mark-paid', async (req, res) => {
+  try {
+    const { orderId } = req.body;
+
+    const order = await Order.findOneAndUpdate(
+      { orderId },
+      { status: "paid" },
+      { new: true }
+    );
+
+    res.json(order);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.put('/status', async (req, res) => {
+  try {
+    const { orderId, status } = req.body;
+
+    const order = await Order.findOneAndUpdate(
+      { orderId },
+      { status },
+      { new: true }
+    );
+
+    res.json(order);
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

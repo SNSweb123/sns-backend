@@ -2,20 +2,15 @@
   "name": "premium-promo-backend",
   "version": "1.0.0",
   "description": "Backend for Premium Promo Codes website",
-
   "type": "module",
-
   "main": "api/index.js",
-
   "scripts": {
     "start": "node api/index.js",
     "dev": "nodemon api/index.js"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
-
   "dependencies": {
     "@vercel/node": "^5.8.1",
     "cloudinary": "^2.9.0",
@@ -27,9 +22,9 @@
     "mongodb": "^7.0.0",
     "mongoose": "^8.0.3",
     "multer": "^2.1.1",
-    "razorpay": "^2.9.6"
+    "razorpay": "^2.9.6",
+    "uuid": "^14.0.1"
   },
-
   "devDependencies": {
     "nodemon": "^3.0.2"
   }
