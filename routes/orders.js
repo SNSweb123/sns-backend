@@ -65,21 +65,30 @@ if (!totalPriceINR || isNaN(totalPriceINR) || totalPriceINR <= 0) {
 
 
 // GET ALL ORDERS
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
+
   try {
 
-    const orders =
-      await Order.find().sort({ createdAt: -1 });
+    const filter = {};
+
+    if (req.query.status) {
+      filter.status = req.query.status;
+    }
+
+    const orders = await Order.find(filter).sort({
+      createdAt: -1
+    });
 
     res.json(orders);
 
   } catch (error) {
 
     res.status(500).json({
-      message: 'Failed to fetch orders',
-      error
+      message: "Failed"
     });
+
   }
+
 });
 
 router.put("/decision", async (req, res) => {
@@ -98,21 +107,36 @@ router.put("/decision", async (req, res) => {
 });
 
 // MARK AS PAID (USER CLICK)
-router.put('/mark-paid', async (req, res) => {
+router.put("/mark-paid", async (req, res) => {
+
   try {
+
     const { orderId } = req.body;
 
-    const order = await Order.findOneAndUpdate(
-      { orderId },
-      { status: "paid" },
-      { new: true }
-    );
+    const order = await Order.findOne({
+      orderId
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found"
+      });
+    }
+
+    order.status = "pending";
+
+    await order.save();
 
     res.json(order);
 
   } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    res.status(500).json({
+      message: err.message
+    });
+
   }
+
 });
 
 router.put('/status', async (req, res) => {
@@ -151,5 +175,32 @@ router.put("/update-status", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+router.get("/:orderId", async (req, res) => {
+
+  try {
+
+    const order = await Order.findOne({
+      orderId: req.params.orderId
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found"
+      });
+    }
+
+    res.json(order);
+
+  } catch (err) {
+
+    res.status(500).json({
+      message: err.message
+    });
+
+  }
+
+});
+
 
 export default router;
