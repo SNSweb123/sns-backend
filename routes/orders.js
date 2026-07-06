@@ -132,4 +132,24 @@ router.put('/status', async (req, res) => {
   }
 });
 
+router.put("/update-status", async (req, res) => {
+  try {
+    const { orderId, status } = req.body;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.json({ success: true, order });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;

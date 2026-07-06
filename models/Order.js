@@ -3,9 +3,10 @@ import mongoose from 'mongoose';
 const orderSchema = new mongoose.Schema({
 
 
-  status: {
+ status: {
   type: String,
-  default: "pending" // pending, paid, accepted, rejected
+  enum: ["pending", "approved", "rejected"],
+  default: "pending"
 },
   
   // ✅ YOUR CUSTOM ORDER ID
