@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/', async (req, res) => {
   try {
    
-   const generatedOrderId = uuidv4(); 
+ const generatedOrderId = `ORD-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`;
 
      
     const {
