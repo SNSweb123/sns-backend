@@ -4,68 +4,57 @@ import Order from "../models/Order.js";
 const router = express.Router();
 
 
-router.post("/webhook", async(req,res)=>{
+router.post("/webhook", async (req, res) => {
 
-try {
+  console.log("🔥 TELEGRAM WEBHOOK HIT");
 
-const data = req.body;
+  res.status(200).json({
+    success:true
+  });
 
+  try {
 
-// Telegram button click data
-const callback = data.callback_query;
+    const data = req.body;
 
-if(!callback){
-    return res.sendStatus(200);
-}
+    const callback = data.callback_query;
 
+    if(!callback){
+      return;
+    }
 
-const action = callback.data;
+    const action = callback.data;
 
-
-// approve_ORD123
-const [status, orderId] = action.split("_");
-
-
-const order = await Order.findOne({
-    orderId
-});
+    const [status, orderId] = action.split("_");
 
 
-if(!order){
-    return res.sendStatus(200);
-}
+    const order = await Order.findOne({
+      orderId
+    });
 
 
-if(status === "approve"){
-
-    order.status="approved";
-
-}
+    if(!order){
+      return;
+    }
 
 
-if(status === "reject"){
-
-    order.status="rejected";
-
-}
+    if(status === "approve"){
+      order.status = "approved";
+    }
 
 
-await order.save();
+    if(status === "reject"){
+      order.status = "rejected";
+    }
 
 
-
-res.sendStatus(200);
-
+    await order.save();
 
 
-}catch(error){
+  } catch(error){
 
-console.log(error);
+    console.log(error);
 
-res.sendStatus(500);
-
-}
-
+  }
 
 });
 
