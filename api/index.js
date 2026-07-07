@@ -13,6 +13,7 @@ import uploadRoutes from "../routes/upload.js";
 import newsletterRoutes from "../routes/newsletterRoutes.js";
 import paymentRoutes from "../routes/payment.js";
 import adminRoutes from "../routes/admin.js";
+import telegramRouter from "../routes/telegram.js";
 
 
 const app = express();
@@ -51,6 +52,7 @@ app.use("/api/upload", uploadRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/telegram",telegramRouter);
 
 
 // ✅ Admin Route
