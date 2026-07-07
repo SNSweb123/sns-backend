@@ -1,6 +1,8 @@
 import express from "express";
+import Order from "../models/Order.js";
 
 const router = express.Router();
+
 
 router.post("/webhook", async(req,res)=>{
 
@@ -19,14 +21,12 @@ if(!callback){
 
 const action = callback.data;
 
-console.log("BUTTON DATA:", action);
-
 
 const [status, orderId] = action.split("_");
 
 
-console.log("STATUS:", status);
-console.log("ORDER ID:", orderId);
+console.log("STATUS:",status);
+console.log("ORDER ID:",orderId);
 
 
 
@@ -35,7 +35,7 @@ const order = await Order.findOne({
 });
 
 
-console.log("FOUND ORDER:", order);
+console.log("FOUND ORDER:",order);
 
 
 
@@ -46,27 +46,23 @@ if(!order){
 
 
 if(status === "approve"){
-
     order.status="approved";
-
 }
 
 
 if(status === "reject"){
-
     order.status="rejected";
-
 }
+
 
 
 await order.save();
 
 
 console.log(
-"ORDER UPDATED:",
+"UPDATED STATUS:",
 order.status
 );
-
 
 
 res.sendStatus(200);
@@ -75,7 +71,10 @@ res.sendStatus(200);
 
 }catch(error){
 
-console.log("WEBHOOK ERROR:",error);
+console.log(
+"WEBHOOK ERROR:",
+error
+);
 
 res.sendStatus(500);
 
@@ -83,5 +82,6 @@ res.sendStatus(500);
 
 
 });
+
 
 export default router;
