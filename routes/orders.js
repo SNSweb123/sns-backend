@@ -149,7 +149,7 @@ router.put("/mark-paid", async (req, res) => {
 
 
 
-    await sendTelegramMessage(
+   await sendTelegramMessage(
 `
 🔥 New Payment Received
 
@@ -175,9 +175,10 @@ ${order.items.map(
 `${item.productName} x ${item.quantity}`
 ).join("\n")}
 
-⏳ Status:
-Pending Approval
-`
+
+⏳ Waiting For Approval
+`,
+order.orderId
 );
 
 
