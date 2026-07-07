@@ -124,6 +124,8 @@ router.put("/decision", async (req, res) => {
   }
 });
 
+
+
 // MARK AS PAID (USER CLICK)
 router.put("/mark-paid", async (req, res) => {
 
@@ -144,6 +146,40 @@ router.put("/mark-paid", async (req, res) => {
     order.status = "pending";
 
     await order.save();
+
+
+
+    await sendTelegramMessage(
+`
+🔥 New Payment Received
+
+🆔 Order ID:
+${order.orderId}
+
+👤 Name:
+${order.fullName}
+
+📧 Email:
+${order.email}
+
+📱 Phone:
+${order.phone}
+
+💰 Amount:
+₹${order.totalPriceINR}
+
+📦 Products:
+
+${order.items.map(
+(item)=>
+`${item.productName} x ${item.quantity}`
+).join("\n")}
+
+⏳ Status:
+Pending Approval
+`
+);
+
 
     res.json(order);
 
