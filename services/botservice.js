@@ -4,6 +4,7 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 
+// SEND NEW ORDER MESSAGE
 export const sendTelegramMessage = async (
   message,
   orderId
@@ -52,6 +53,49 @@ export const sendTelegramMessage = async (
 
     console.log(
       "Telegram Error:",
+      error.response?.data || error.message
+    );
+
+  }
+
+};
+
+
+
+// ✅ ADD THIS NEW FUNCTION BELOW
+export const updateTelegramMessage = async (
+  chatId,
+  messageId,
+  text
+) => {
+
+  try {
+
+    await axios.post(
+      `https://api.telegram.org/bot${BOT_TOKEN}/editMessageText`,
+      {
+
+        chat_id: chatId,
+
+        message_id: messageId,
+
+        text: text,
+
+        parse_mode:"HTML"
+
+      }
+    );
+
+
+    console.log(
+      "Telegram message updated"
+    );
+
+
+  } catch(error){
+
+    console.log(
+      "Telegram Update Error:",
       error.response?.data || error.message
     );
 

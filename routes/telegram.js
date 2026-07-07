@@ -1,5 +1,6 @@
 import express from "express";
 import Order from "../models/Order.js";
+import { updateTelegramMessage } from "../services/botservice.js";
 
 const router = express.Router();
 
@@ -39,7 +40,7 @@ console.log("FOUND ORDER:",order);
 
 
 
-if(!order){
+if(order.status !== "pending"){
     return res.sendStatus(200);
 }
 
@@ -64,6 +65,27 @@ console.log(
 order.status
 );
 
+
+await updateTelegramMessage(
+    callback.message.chat.id,
+    callback.message.message_id,
+
+    status === "approve"
+    ?
+`✅ Order Approved
+
+🆔 Order ID:
+${orderId}
+
+Admin Approved`
+    :
+`❌ Order Rejected
+
+🆔 Order ID:
+${orderId}
+
+Admin Rejected`
+);
 
 res.sendStatus(200);
 
