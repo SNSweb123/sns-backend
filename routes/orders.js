@@ -6,6 +6,23 @@ import { sendTelegramMessage } from "../services/botservice.js";
 const router = express.Router();
 
 
+
+router.get("/telegram-test", async (req,res)=>{
+
+  await sendTelegramMessage(
+    "✅ Telegram connection test successful"
+  );
+
+  res.json({
+    message:"Telegram test done"
+  });
+
+});
+
+
+
+
+
 // CREATE NEW ORDER
 router.post('/', async (req, res) => {
   try {
@@ -200,18 +217,6 @@ router.get("/:orderId", async (req, res) => {
     });
 
   }
-
-});
-
-router.get("/telegram-test", async (req,res)=>{
-
-  await sendTelegramMessage(
-    "✅ Telegram connection test successful"
-  );
-
-  res.json({
-    message:"Telegram test done"
-  });
 
 });
 
