@@ -37,14 +37,17 @@ router.post("/", adminAuth, async (req, res) => {
     // =========================
     // SUBSCRIPTION
     // =========================
-    if (data.type === "subscription") {
 
-      const product = new SubscriptionProduct(data);
 
-      await product.save();
+    const updated = await SubscriptionProduct.findByIdAndUpdate(
+    req.params.id,
+    data,
+    { new:true }
+);
 
-      return res.status(201).json(product);
-    }
+res.json(updated);
+
+
 
     res.status(400).json({
       error: "Invalid product type"
@@ -119,5 +122,40 @@ router.put("/:id", adminAuth, async (req, res) => {
     });
   }
 });
+
+
+
+// DELETE SINGLE COUPON CODE
+router.delete("/:productId/code/:codeId", adminAuth, async (req, res) => {
+  try {
+
+    const { productId, codeId } = req.params;
+
+    await SubscriptionProduct.findByIdAndUpdate(
+      productId,
+      {
+        $pull: {
+          couponCodes: {
+            _id: codeId
+          }
+        }
+      }
+    );
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+});
+
+
+
 
 export default router;
